@@ -56,17 +56,30 @@ def get_availability(user_id: str) -> Optional[List[Availability]]:
     availabilities = user_availabilities.get(user_id, None)
     return availabilities
     
-#     return overlap if overlap else None
+
 def find_availability_overlap(user_id_1: str, user_id_2: str) -> Optional[List[Dict[str, str]]]:
-    availabilities_1 = user_availabilities.get(user_id_1, [])
-    availabilities_2 = user_availabilities.get(user_id_2, [])
+    # Get the availabilities for each user
+    availabilities_1 = sorted(user_availabilities.get(user_id_1, []), key=lambda x: x["start_time"])
+    availabilities_2 = sorted(user_availabilities.get(user_id_2, []), key=lambda x: x["start_time"])
 
     overlaps = []
-    for a1 in availabilities_1:
-        for a2 in availabilities_2:
-            overlap_start = max(a1["start_time"], a2["start_time"])
-            overlap_end = min(a1["end_time"], a2["end_time"])
-            if overlap_start < overlap_end:
-                overlaps.append({"start_time": overlap_start, "end_time": overlap_end})
+    i, j = 0, 0
+
+    while i < len(availabilities_1) and j < len(availabilities_2):
+        a1_start, a1_end = availabilities_1[i]["start_time"], availabilities_1[i]["end_time"]
+        a2_start, a2_end = availabilities_2[j]["start_time"], availabilities_2[j]["end_time"]
+
+        # Find overlap
+        overlap_start = max(a1_start, a2_start)
+        overlap_end = min(a1_end, a2_end)
+        
+        if overlap_start < overlap_end:
+            overlaps.append({"start_time": overlap_start, "end_time": overlap_end})
+
+        # Move to the next interval in the list that has the earliest end time
+        if a1_end < a2_end:
+            i += 1
+        else:
+            j += 1
 
     return overlaps if overlaps else None
