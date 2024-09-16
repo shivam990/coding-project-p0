@@ -37,6 +37,9 @@ Please fork this repository and reach out to Prakash when finished.
 
 After submission, we will conduct a 30 to 60 minute code review in person. We will ask you about your thinking and design choices.
 
+## Assumptions
+1. Using In-memory Cache to store the data, i.e.. focusing on MVP & business logic.
+
 
 ## Deployment Details
 
@@ -45,8 +48,11 @@ Host Url: https://coding-project-p0-production.up.railway.app/
 
 Use below endpoints to hit the api's:-
 
-1. Save/Update Availability - POST
-https://coding-project-p0-production.up.railway.app/availability/{user_2}
+1. Save/Update Availability
+POST - "/availability/{user_id}"
+This API will save & update the list of availabilities provided for a user. Also it is smart enough to detect the adjacent/overlapping intervals, & provides the final merged  availability.
+
+Sample URL: https://coding-project-p0-production.up.railway.app/availability/{user_2}
 
 Sample request json:-
 ```
@@ -77,7 +83,12 @@ Sample response json:-
 ```
 
 2. Get Availability - GET
-https://coding-project-p0-production.up.railway.app/availability/{user_2}
+GET - "/availability/{user_id}"
+This API would provide the list of availabilities of a particular user.
+
+Sample Url: https://coding-project-p0-production.up.railway.app/availability/{user_2}
+
+Sample Response:-
 
 ```
 {
@@ -94,9 +105,13 @@ https://coding-project-p0-production.up.railway.app/availability/{user_2}
 }
 ```
 
-3. Find Overlap between two users - GET
-https://coding-project-p0-production.up.railway.app/overlap?user_id_1={user_1}&user_id_2={user_2}
+3. Find Overlap between two users
+GET - "/overlap"
+This API provides the oevrlapping of intervals between two users ex- user_1 & user_2
 
+Sample Url: https://coding-project-p0-production.up.railway.app/overlap?user_id_1={user_1}&user_id_2={user_2}
+
+Sample Response:-
 ```
 {
     "overlap": [
